@@ -116,7 +116,7 @@ grep -L -E "(This content can't be found\.|You cannot enrol yourself in this cou
 
 ```
 # 列出有問題的本地連結種類
-grep -rho '"[^"]*\.[^"/@]*\.html"' tksg.org/ | sed 's/.*\(\.[^.]*\.html\)".*/\1/' | sort -u
+grep -rho '"[^"]*\.[^"/@]*\.html"' yourdomain.com/ | sed 's/.*\(\.[^.]*\.html\)".*/\1/' | sort -u
   # .JPG.html
   # .css.html
   # .jpeg.html
@@ -125,15 +125,15 @@ grep -rho '"[^"]*\.[^"/@]*\.html"' tksg.org/ | sed 's/.*\(\.[^.]*\.html\)".*/\1/
   # .png.html
 
 # 除了 php 以外其他有添加 `.html` 需要移除該 `.html`
-grep -rho '"[^"]*\.\(png\|jpg\|JPG\|css\|jpeg\)\.html"' tksg.org/ | wc
+grep -rho '"[^"]*\.\(png\|jpg\|JPG\|css\|jpeg\)\.html"' yourdomain.com/ | wc
   #     3433    3433  289235
-grep -rho '"[^"]*\.\(php\)\.html"' tksg.org/ | wc
+grep -rho '"[^"]*\.\(php\)\.html"' yourdomain.com/ | wc
   #        7       7     155
-grep -rho '"[^"]*\.[^"/@]*\.html"' tksg.org/ | wc
+grep -rho '"[^"]*\.[^"/@]*\.html"' yourdomain.com/ | wc
   #     3440    3440  289390
 
 # 取代
-find tksg.org/ -name "*.html" -exec perl -i -pe 's/"([^"]*\.(png|jpg|JPG|css|jpeg))\.html"/"$1"/g' {} +
+find yourdomain.com/ -name "*.html" -exec perl -i -pe 's/"([^"]*\.(png|jpg|JPG|css|jpeg))\.html"/"$1"/g' {} +
 ```
 
 #### 依然聯外連結
@@ -142,15 +142,15 @@ find tksg.org/ -name "*.html" -exec perl -i -pe 's/"([^"]*\.(png|jpg|JPG|css|jpe
 因此需要修正此錯誤
 
 ```
-grep -rho '"https://tksg.org/[^"?]*\.php"' tksg.org/ | wc
+grep -rho '"https://yourdomain.com/[^"?]*\.php"' yourdomain.com/ | wc
   #     7270    7270  305286
-grep -rho '"https://tksg.org/[^"]*\?id=[^"]*"' tksg.org/ | wc
+grep -rho '"https://yourdomain.com/[^"]*\?id=[^"]*"' yourdomain.com/ | wc
   #    14414   14414  642636
 
-find tksg.org/ -name "*.html" -exec sh -c '
+find yourdomain.com/ -name "*.html" -exec sh -c '
   file="$1"
-  # 移除 tksg.org/ 前綴，計算斜線數量
-  path_without_prefix="${file#tksg.org/}"
+  # 移除 yourdomain.com/ 前綴，計算斜線數量
+  path_without_prefix="${file#yourdomain.com/}"
   depth=$(echo "$path_without_prefix" | tr -cd "/" | wc -c)
   # 生成相對路徑前綴
   relative=""
@@ -164,9 +164,9 @@ find tksg.org/ -name "*.html" -exec sh -c '
 ' _ {} \;
 
 
-find tksg.org/ -name "*.html" -exec sh -c '
+find yourdomain.com/ -name "*.html" -exec sh -c '
   file="$1"
-  path_without_prefix="${file#tksg.org/}"
+  path_without_prefix="${file#yourdomain.com/}"
   depth=$(echo "$path_without_prefix" | tr -cd "/" | wc -c)
   relative=""
   i=1
@@ -185,9 +185,9 @@ find tksg.org/ -name "*.html" -exec sh -c '
 
 ```
 # 確認內容
-grep -rho 'pluginfile\.php[a-zA-Z0-9/_]*/[a-zA-Z0-9_]*\.[a-zA-Z0-9_\.]\+@[a-zA-Z0-9_]\+=[a-zA-Z0-9_]\+\.html' tksg.org/
+grep -rho 'pluginfile\.php[a-zA-Z0-9/_]*/[a-zA-Z0-9_]*\.[a-zA-Z0-9_\.]\+@[a-zA-Z0-9_]\+=[a-zA-Z0-9_]\+\.html' yourdomain.com/
 # 確認影響檔案
-grep -rl 'pluginfile\.php/[^"]*\.png@time=[^"]*\.html' tksg.org/
+grep -rl 'pluginfile\.php/[^"]*\.png@time=[^"]*\.html' yourdomain.com/
 # Sublime 手動修正 (因為寫腳本失敗了，誒嘿～)
 ```
 
@@ -196,7 +196,7 @@ grep -rl 'pluginfile\.php/[^"]*\.png@time=[^"]*\.html' tksg.org/
 隱私問題
 
 ```
-grep -rho 'Your Name' tksg.org/ | wc
+grep -rho 'Your Name' yourdomain.com/ | wc
   #     6186   12372   92790
-find tksg.org/ -name "*.html" -exec perl -i -pe 's/Your Name/Anonymous/g' {} +
+find yourdomain.com/ -name "*.html" -exec perl -i -pe 's/Your Name/Anonymous/g' {} +
 ```
